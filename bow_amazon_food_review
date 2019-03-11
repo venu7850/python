@@ -1,0 +1,48 @@
+step1:-
+
+stop=set(stopwords.words('english'))
+sno=nltk.SnowballStemmer('english')
+def cleanhtml(s):
+    a=re.sub('[|>.*?|\.*|?.*?]',"",s)
+    return a
+def cleanpunc(s):
+    a=re.sub('[.|,|!,|)|(|/|\|”|\’|#|@|$|-|%|]',"",s)
+    return a
+    
+step2:-
+
+i=0;
+str1=''
+final_string=[]
+pos_words=[]
+neg_words=[]
+s=''
+for s in final['Text'].values:
+    f=[]
+    s=cleanhtml(s)
+    for w in s.split():
+        for c in cleanpunc(w).split():
+            if((c.isalpha())&(len(c)>2)):
+                if(c.lower()not in stop):
+                    s=(sno.stem(c.lower())).encode('utf8')
+                    f.append(s)
+                    if(final['Score'].values)[i]=='positive':
+                        pos_words.append(s)
+                    if(final['Score'].values)[i]=='negative':
+                        neg_words.append(s)
+                else:
+                    continue
+            else:
+                continue
+    str1=b"".join(f)
+    final_string.append(str1)
+    i=i+1
+    
+Step3:-
+
+final['CleanedText']=final_string
+conn=sqlite3.connect('final.sqlite')
+c=conn.cursor()
+conn.text_factory=str
+final.to_sql('Reviews',conn,schema=None,if_exists='replace')
+             
